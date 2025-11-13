@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block title %}Contact Us - AgriFarma{% endblock %}
+
+{% block content %}
+<style>
+  :root {
+    --primary-green: #198754;
+    --accent-green: #20c997;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(25, 135, 84, 0.15);
+  }
+
+  .contact-section {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #e8f5e9 0%, #f9fdfb 100%);
+    backdrop-filter: blur(10px);
+  }
+
+  .contact-header h1 {
+    font-weight: 700;
+    color: var(--primary-green);
+  }
+
+  .contact-header p {
+    color: #6c757d;
+    font-size: 1.1rem;
+  }
+
+  .contact-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  .contact-info i {
+    font-size: 1.5rem;
+    color: var(--accent-green);
+    margin-right: 10px;
+  }
+
+  .form-control {
+    border-radius: 12px;
+    border: 1px solid #dcdcdc;
+    padding: 10px 14px;
+  }
+
+  .form-control:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+  }
+
+  .btn-success {
+    background-color: var(--primary-green);
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px;
+  }
+
+  .btn-success:hover {
+    background-color: #157347;
+  }
+
+  .alert {
+    border-radius: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .contact-header h1 {
+      font-size: 1.8rem;
+    }
+  }
+</style>
+
+<section class="contact-section">
+  <div class="container">
+    <div class="contact-header text-center mb-5">
+      <h1>Contact AgriFarma</h1>
+      <p>We’re here to assist you — reach out for inquiries, support, or feedback.</p>
+    </div>
+
+    <div class="row justify-content-center">
+      <!-- Contact Info -->
+      <div class="col-md-5 mb-4">
+        <div class="contact-card p-4 h-100">
+          <h4 class="mb-4 text-success">Contact Information</h4>
+
+          <div class="contact-info mb-3 d-flex">
+            <i class="bi bi-geo-alt"></i>
+            <div>
+              <strong>Address:</strong><br>
+              AgriFarma Headquarters<br>
+              Agricultural Technology Park<br>
+              Pakistan
+            </div>
+          </div>
+
+          <div class="contact-info mb-3 d-flex">
+            <i class="bi bi-envelope"></i>
+            <div>
+              <strong>Email:</strong><br>
+              <a href="mailto:info@agrifarma.com" class="text-decoration-none text-dark">info@agrifarma.com</a>
+            </div>
+          </div>
+
+          <div class="contact-info mb-3 d-flex">
+            <i class="bi bi-telephone"></i>
+            <div>
+              <strong>Phone:</strong><br>
+              +92 300 1234567
+            </div>
+          </div>
+
+          <div class="contact-info mb-3 d-flex">
+            <i class="bi bi-clock"></i>
+            <div>
+              <strong>Business Hours:</strong><br>
+              Mon - Fri: 9:00 AM - 6:00 PM<br>
+              Sat: 9:00 AM - 2:00 PM
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="col-md-7">
+        <div class="contact-card p-4">
+          <h4 class="mb-4 text-success">Send us a Message</h4>
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+
+          <form method="POST" action="{{ url_for('contact.submit_message') }}">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+              {{ form.name.label(class="form-label fw-semibold") }}
+              {{ form.name(class="form-control", placeholder="Your full name") }}
+              {% for error in form.name.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              {{ form.email.label(class="form-label fw-semibold") }}
+              {{ form.email(class="form-control", placeholder="your.email@example.com") }}
+              {% for error in form.email.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              {{ form.message.label(class="form-label fw-semibold") }}
+              {{ form.message(class="form-control", rows="5", placeholder="Write your message...") }}
+              {% for error in form.message.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="d-grid">
+              {{ form.submit(class="btn btn-success btn-lg shadow-sm") }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

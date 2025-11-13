@@ -1,0 +1,209 @@
+{% extends "admin/dashboard.html" %}
+
+{% block title %}Consultancy Management - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center bg-white p-4 rounded-4 shadow-sm">
+                <h2 class="mb-0">Consultancy Management</h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Consultancy Management</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Quick Stats -->
+        <div class="col-12 mb-4">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Total Consultants</h6>
+                            <h2 class="mb-0">{{ (approved_consultants + pending_consultants)|length }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Approved Consultants</h6>
+                            <h2 class="mb-0">{{ approved_consultants|length }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-warning">
+                        <div class="card-body">
+                            <h6 class="card-title">Pending Applications</h6>
+                            <h2 class="mb-0">{{ pending_consultants|length }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Applications -->
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Pending Applications</h4>
+                    <span class="badge bg-dark">{{ pending_consultants|length }}</span>
+                </div>
+                <div class="card-body">
+                    {% if pending_consultants %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Contact</th>
+                                    <th>Expertise</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for consultant in pending_consultants %}
+                                <tr>
+                                    <td>
+                                        {% if consultant.profile_picture %}
+                                            <img src="{{ url_for('static', filename=consultant.profile_picture) }}" class="rounded-circle me-2" width="32" height="32">
+                                        {% endif %}
+                                        {{ consultant.name }}
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-envelope"></i> {{ consultant.email }}<br>
+                                        <i class="bi bi-phone"></i> {{ consultant.phone }}
+                                    </td>
+                                    <td>
+                                        {{ consultant.category_rel.name }}<br>
+                                        <small class="text-muted">{{ consultant.bio[:50] }}{% if consultant.bio|length > 50 %}...{% endif %}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning">Pending</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <form method="POST" action="{{ url_for('consultancy.handle_consultant_application', id=consultant.id, action='approve') }}" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-success me-1">
+                                                    <i class="bi bi-check-lg"></i> Approve
+                                                </button>
+                                            </form>
+                                            <form method="POST" action="{{ url_for('consultancy.handle_consultant_application', id=consultant.id, action='reject') }}" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-danger me-1">
+                                                    <i class="bi bi-x-lg"></i> Reject
+                                                </button>
+                                            </form>
+                                            <button type="button" class="btn btn-sm btn-outline-dark delete-consultant" data-id="{{ consultant.id }}" data-name="{{ consultant.name }}">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox display-4 text-muted"></i>
+                        <p class="lead mt-2">No pending applications</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Approved Consultants -->
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Approved Consultants</h4>
+                    <span class="badge bg-light text-dark">{{ approved_consultants|length }}</span>
+                </div>
+                <div class="card-body">
+                    {% if approved_consultants %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Contact</th>
+                                    <th>Expertise</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for consultant in approved_consultants %}
+                                <tr>
+                                    <td>
+                                        {% if consultant.profile_picture %}
+                                            <img src="{{ url_for('static', filename=consultant.profile_picture) }}" class="rounded-circle me-2" width="32" height="32">
+                                        {% endif %}
+                                        {{ consultant.name }}
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-envelope"></i> {{ consultant.email }}<br>
+                                        <i class="bi bi-phone"></i> {{ consultant.phone }}
+                                    </td>
+                                    <td>
+                                        {{ consultant.category_rel.name }}<br>
+                                        <small class="text-muted">{{ consultant.bio[:50] }}{% if consultant.bio|length > 50 %}...{% endif %}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success">Active</span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-outline-danger delete-consultant" data-id="{{ consultant.id }}" data-name="{{ consultant.name }}">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-people display-4 text-muted"></i>
+                        <p class="lead mt-2">No approved consultants yet</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for delete functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handlers to all delete buttons
+    document.querySelectorAll('.delete-consultant').forEach(button => {
+        button.addEventListener('click', function() {
+            const consultantId = this.getAttribute('data-id');
+            const consultantName = this.getAttribute('data-name');
+            
+            if (confirm('Are you sure you want to delete consultant "' + consultantName + '"? This action cannot be undone.')) {
+                // Create and submit form dynamically
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{{ url_for('consultancy.delete_consultant', id=0) }}".replace('/0', '/' + consultantId);
+                form.style.display = 'none';
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

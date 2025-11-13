@@ -1,0 +1,355 @@
+
+{% extends "base.html" %}
+
+{% block title %}Home - AgriFarma{% endblock %}
+
+{% block content %}
+<div class="fade-in-up">
+<!-- Carousel Section -->
+<div id="heroCarousel" class="carousel slide carousel-fade mb-5" data-bs-ride="false">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="/static/images/truck-working-field-sunny-day (1).jpg" class="d-block w-100" alt="Modern Farming" loading="eager">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Modern Farming Solutions</h5>
+                <p>Embrace technology for better yields and sustainable agriculture.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="/static/images/farmer-inspecting-field-green-vegetables.jpg" class="d-block w-100" alt="Community Support" loading="lazy">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Strong Community</h5>
+                <p>Connect with fellow farmers and share knowledge.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="/static/images/two-researches-man-woman-examine-greenery-with-tablet-all-white-greenhouse.jpg" class="d-block w-100" alt="Expert Consultation" loading="lazy">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Expert Guidance</h5>
+                <p>Get advice from agricultural professionals.</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<div class="welcome-section text-center mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-4">Welcome to AgriFarma</h1>
+        <p class="lead mb-4">A comprehensive platform for farmers — connecting knowledge, community, commerce, and expertise</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/auth/login" class="btn btn-light btn-lg px-4 py-3">Get Started</a>
+            <a href="/forum" class="btn btn-outline-light btn-lg px-4 py-3">Explore Forum</a>
+        </div>
+    </div>
+</div>
+
+<!-- About Us Section -->
+<section class="about-us-section py-4" style="background: linear-gradient(135deg, #f8fff8 0%, #ffffff 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <!-- Header Section -->
+                <div class="text-center mb-4">
+                    <h2 class="display-5 fw-bold text-success mb-3">About AgriFarma</h2>
+                    <div class="mx-auto" style="max-width: 500px; height: 3px; background: linear-gradient(90deg, transparent, #198754, transparent);"></div>
+                </div>
+                
+                <!-- Text Section - All Centered -->
+                <div class="text-center">
+                    <p class="lead text-dark mb-4 mx-auto" style="max-width: 700px; font-size: 1.1rem; line-height: 1.7;">
+                        AgriFarma is dedicated to <strong class="text-success">revolutionizing agriculture</strong> through technology, community, and innovation. We connect farmers with the tools, knowledge, and support they need to thrive in modern farming.
+                    </p>
+                    
+                    <!-- Key Features -->
+                    <div class="row g-3 mb-4 justify-content-center">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="p-3 rounded-4 bg-white shadow-sm h-100 text-center border border-success border-opacity-25">
+                                <i class="bi bi-lightbulb text-success fs-2 mb-2 d-block"></i>
+                                <h6 class="fw-bold mb-1">Innovation</h6>
+                                <p class="text-muted small mb-0">Cutting-edge technology for modern farming</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="p-3 rounded-4 bg-white shadow-sm h-100 text-center border border-success border-opacity-25">
+                                <i class="bi bi-people text-success fs-2 mb-2 d-block"></i>
+                                <h6 class="fw-bold mb-1">Community</h6>
+                                <p class="text-muted small mb-0">Connect with fellow farmers and experts</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="p-3 rounded-4 bg-white shadow-sm h-100 text-center border border-success border-opacity-25">
+                                <i class="bi bi-graph-up-arrow text-success fs-2 mb-2 d-block"></i>
+                                <h6 class="fw-bold mb-1">Growth</h6>
+                                <p class="text-muted small mb-0">Empower your farming journey</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CTA Button -->
+                    <a href="/about" class="btn btn-success btn-lg px-4 py-2 rounded-pill shadow-sm">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Learn More About Us
+                    </a>
+            </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="row g-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center glass-card">
+            <div class="card-body p-4">
+                <i class="fas fa-comments fa-4x text-success mb-4"></i>
+                <h5 class="card-title fw-bold mb-3">Discussion Forum</h5>
+                <p class="card-text text-secondary mb-4">Connect with fellow farmers, share experiences, and get advice from the community.</p>
+                <a href="/forum" class="btn btn-modern w-100">Join Discussion</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center glass-card">
+            <div class="card-body p-4">
+                <i class="fas fa-book fa-4x text-success mb-4"></i>
+                <h5 class="card-title fw-bold mb-3">Knowledge Base</h5>
+                <p class="card-text text-secondary mb-4">Access expert articles, farming tips, and the latest agricultural insights.</p>
+                <a href="/blog" class="btn btn-modern w-100">Read Articles</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center glass-card">
+            <div class="card-body p-4">
+                <i class="fas fa-shopping-cart fa-4x text-success mb-4"></i>
+                <h5 class="card-title fw-bold mb-3">Marketplace</h5>
+                <p class="card-text text-secondary mb-4">Buy and sell agricultural products, equipment, and supplies locally.</p>
+                <a href="/shop" class="btn btn-modern w-100">Shop Now</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center glass-card">
+            <div class="card-body p-4">
+                <i class="fas fa-user-tie fa-4x text-success mb-4"></i>
+                <h5 class="card-title fw-bold mb-3">Consultancy</h5>
+                <p class="card-text text-secondary mb-4">Get expert advice from agricultural consultants and specialists.</p>
+                <a href="/consultancy" class="btn btn-modern w-100">Find Experts</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Professional Services Section -->
+<section class="services-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Our Professional Services</h2>
+            <p class="lead text-muted">Comprehensive agricultural solutions tailored for modern farmers</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center service-card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="service-icon mb-4">
+                            <i class="fas fa-seedling fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Crop Consulting</h5>
+                        <p class="card-text text-muted">Expert advice on crop selection, planting techniques, and yield optimization.</p>
+                        <a href="#" class="btn btn-outline-success">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center service-card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="service-icon mb-4">
+                            <i class="fas fa-tractor fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Equipment Services</h5>
+                        <p class="card-text text-muted">Access to modern farming equipment and machinery rental services.</p>
+                        <a href="#" class="btn btn-outline-success">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center service-card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="service-icon mb-4">
+                            <i class="fas fa-chart-line fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Market Analysis</h5>
+                        <p class="card-text text-muted">Data-driven insights for pricing, market trends, and sales strategies.</p>
+                        <a href="#" class="btn btn-outline-success">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center service-card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="service-icon mb-4">
+                            <i class="fas fa-leaf fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Sustainable Farming</h5>
+                        <p class="card-text text-muted">Guidance on eco-friendly practices and organic farming methods.</p>
+                        <a href="#" class="btn btn-outline-success">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="team-section py-5 bg-light">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-5 text-success">Our Team</h2>
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card team-card h-100 border-0 shadow-sm rounded-3">
+          <img src="/static/images/p.2.jpeg" class="card-img-top rounded-3" alt="John Smith" style="height: 250px; object-fit: cover;" loading="lazy">
+          <div class="card-body text-center">
+            <h5 class="card-title fw-bold">Khizar Hayat</h5>
+            <p class="card-text text-muted">Agriculture Consultant</p>
+            <p class="card-text small">Expert in crop management and sustainable farming practices with over 10 years of experience.</p>
+            <div class="mt-3">
+              <a href="#" class="text-success me-3"><i class="bi bi-facebook"></i></a>
+              <a href="#" class="text-success me-3"><i class="bi bi-twitter"></i></a>
+              <a href="#" class="text-success"><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card team-card h-100 border-0 shadow-sm rounded-3">
+          <img src="/static/images/profile-img.jpeg" class="card-img-top rounded-3" alt="Sarah Johnson" style="height: 250px; object-fit: cover;" loading="lazy">
+          <div class="card-body text-center">
+            <h5 class="card-title fw-bold">Safdar Ali</h5>
+            <p class="card-text text-muted">Software Engineer</p>
+            <p class="card-text small">Specializes in developing innovative tech solutions for modern agriculture and data analytics.</p>
+            <div class="mt-3">
+              <a href="#" class="text-success me-3"><i class="bi bi-facebook"></i></a>
+              <a href="#" class="text-success me-3"><i class="bi bi-twitter"></i></a>
+              <a href="#" class="text-success"><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card team-card h-100 border-0 shadow-sm rounded-3">
+          <img src="/static/images/profile_pic1.jpeg" class="card-img-top rounded-3" alt="Mike Davis" style="height: 250px; object-fit: cover;" loading="lazy">
+          <div class="card-body text-center">
+            <h5 class="card-title fw-bold">M. Faraz</h5>
+            <p class="card-text text-muted">Farm Manager</p>
+            <p class="card-text small">Experienced farm manager focused on operational efficiency and community outreach.</p>
+            <div class="mt-3">
+              <a href="#" class="text-success me-3"><i class="bi bi-facebook"></i></a>
+              <a href="#" class="text-success me-3"><i class="bi bi-twitter"></i></a>
+              <a href="#" class="text-success"><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact-section py-5" style="background-color:#f8fff8;">
+  <div class="container">
+    <h2 class="fw-bold text-success mb-5 text-center">Contact Us</h2>
+    <div class="row g-4 align-items-start">
+      <div class="col-md-6">
+        <h4 class="fw-bold text-success mb-4">Get In Touch</h4>
+        <div class="mb-3">
+          <i class="fas fa-map-marker-alt text-success me-3"></i>
+          <strong>Address:</strong> 123 Green Road, AgriTown, Country
+        </div>
+        <div class="mb-3">
+          <i class="fas fa-envelope text-success me-3"></i>
+          <strong>Email:</strong> info@agrifarma.com
+        </div>
+        <div class="mb-4">
+          <i class="fas fa-phone text-success me-3"></i>
+          <strong>Phone:</strong> +92 300 1234567
+        </div>
+        <div class="ratio ratio-4x3 rounded-3 overflow-hidden shadow-sm" style="max-height: 300px;">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.1422937950067!2d-73.98731968482413!3d40.75889497932681!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2588f046706e0b%3A0xa0b3281fcecc08c!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1652127849107!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="height: 100%;"></iframe>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h4 class="fw-bold text-success mb-4">Send Us a Message</h4>
+        <form method="POST" action="{{ url_for('contact.submit_message') }}" id="contact-section">
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            <label for="contactName" class="form-label fw-bold">Name</label>
+            {{ form.name(class="form-control rounded-3", id="contactName", placeholder="Your Name") }}
+            {% if form.name.errors %}
+              <div class="text-danger small mt-1">
+                {% for error in form.name.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          <div class="mb-3">
+            <label for="contactEmail" class="form-label fw-bold">Email</label>
+            {{ form.email(class="form-control rounded-3", id="contactEmail", placeholder="your@email.com") }}
+            {% if form.email.errors %}
+              <div class="text-danger small mt-1">
+                {% for error in form.email.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          <div class="mb-3">
+            <label for="contactMessage" class="form-label fw-bold">Message</label>
+            {{ form.message(class="form-control rounded-3", id="contactMessage", rows="5", placeholder="Your message...") }}
+            {% if form.message.errors %}
+              <div class="text-danger small mt-1">
+                {% for error in form.message.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          {{ form.submit(class="btn btn-success px-4 py-2 rounded-3") }}
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+ 
+</div>
+
+<script>
+// Auto-slide carousel every 2 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const carousel = document.querySelector('#heroCarousel');
+    if (carousel) {
+        // Set up the auto-slide with 2 second interval
+        setInterval(function() {
+            const carouselInstance = bootstrap.Carousel.getInstance(carousel);
+            if (carouselInstance) {
+                carouselInstance.next();
+            }
+        }, 2000); // 2000ms = 2 seconds
+    }
+});
+</script>
+
+{% endblock %}

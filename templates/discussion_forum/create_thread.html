@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Thread - AgriFarma Forum{% endblock %}
+
+{% block content %}
+<div class="discussion-forum min-vh-100 py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('forum.forum_home') }}" class="text-decoration-none">Forum</a></li>
+            <li class="breadcrumb-item active">New Discussion</li>
+          </ol>
+        </nav>
+
+        <!-- Create Thread Form -->
+        <div class="glassy-card rounded-4">
+          <div class="card-header bg-transparent p-4 border-0">
+            <div class="d-flex align-items-center gap-3">
+              <div class="rounded-3 p-2" style="background: linear-gradient(135deg, #00b09b, #96c93d);">
+                <i class="bi bi-plus-circle text-white fs-5"></i>
+              </div>
+              <h3 class="mb-0">Start New Discussion</h3>
+            </div>
+          </div>
+          <div class="card-body p-4">
+            <form method="post" action="{{ url_for('forum.create_thread') }}">
+              <div class="mb-4">
+                <label class="form-label fw-semibold">Title</label>
+                <input type="text" name="title" class="form-control form-control-lg border-0 bg-light" required
+                       placeholder="What would you like to discuss?">
+                <div class="form-text">Be specific and descriptive</div>
+              </div>
+            
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Category</label>
+              <select name="category_id" class="form-select form-select-lg border-0 bg-light" required>
+                <option value="">Select a category</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+              </select>
+              <div class="form-text">Choose the most relevant category</div>
+            </div>
+            
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Content</label>
+              <textarea name="body" class="form-control form-control-lg border-0 bg-light" rows="6" required
+                        placeholder="Share your thoughts, questions or ideas..."></textarea>
+              <div class="form-text">You can use markdown formatting</div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <button type="button" class="btn btn-link text-muted text-decoration-none"
+                      onclick="window.history.back()">
+                <i class="bi bi-arrow-left me-2"></i>Cancel
+              </button>
+              <button type="submit" class="btn btn-success btn-lg px-4">
+                <i class="bi bi-send me-2"></i>Create Thread
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tips Card -->
+        <div class="glassy-card rounded-4 mt-4">
+          <div class="card-body p-4">
+            <h5 class="card-title mb-3">
+              <i class="bi bi-lightbulb text-warning me-2"></i>
+              Tips for a Great Discussion
+            </h5>
+            <ul class="list-unstyled mb-0">
+              <li class="d-flex align-items-start mb-2">
+                <i class="bi bi-check2-circle text-success me-2 mt-1"></i>
+                <span>Keep your title clear and specific</span>
+              </li>
+              <li class="d-flex align-items-start mb-2">
+                <i class="bi bi-check2-circle text-success me-2 mt-1"></i>
+                <span>Provide relevant details in your content</span>
+              </li>
+              <li class="d-flex align-items-start mb-2">
+                <i class="bi bi-check2-circle text-success me-2 mt-1"></i>
+                <span>Choose the most appropriate category</span>
+              </li>
+              <li class="d-flex align-items-start">
+                <i class="bi bi-check2-circle text-success me-2 mt-1"></i>
+                <span>Be respectful and constructive</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.glassy-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.glassy-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.15);
+}
+
+.form-control {
+  transition: box-shadow 0.2s;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.25rem rgba(0, 176, 155, 0.25);
+  border-color: #00b09b;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #00b09b, #96c93d);
+  border: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #00b09b, #96c93d);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 176, 155, 0.3);
+}
+</style>
+{% endblock %}

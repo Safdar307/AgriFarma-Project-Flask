@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if product else 'Create' }} Product - Admin{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm rounded-4">
+        <div class="card-body">
+          <h4 class="mb-3">{{ 'Edit Product' if product else 'Create Product' }}</h4>
+          <form method="post" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+              {{ form.title.label(class_='form-label') }}
+              {{ form.title(class_='form-control') }}
+            </div>
+            <div class="mb-3">
+              {{ form.description.label(class_='form-label') }}
+              {{ form.description(class_='form-control', rows=4) }}
+            </div>
+            <div class="mb-3">
+              {{ form.specifications.label(class_='form-label') }}
+              {{ form.specifications(class_='form-control', rows=3) }}
+            </div>
+            <div class="row g-2">
+              <div class="col-md-4">
+                {{ form.price.label(class_='form-label') }}
+                {{ form.price(class_='form-control') }}
+              </div>
+              <div class="col-md-4">
+                {{ form.seller_email.label(class_='form-label') }}
+                {{ form.seller_email(class_='form-control') }}
+              </div>
+              <div class="col-md-4">
+                {{ form.active.label(class_='form-label d-block') }}
+                <div class="form-check form-switch">
+                  {{ form.active(class_='form-check-input') }}
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-2 mt-3">
+              <div class="col-md-6">
+                {{ form.category.label(class_='form-label') }}
+                {{ form.category(class_='form-select') }}
+              </div>
+              <div class="col-md-6">
+                {{ form.subcategory.label(class_='form-label') }}
+                {{ form.subcategory(class_='form-select') }}
+              </div>
+            </div>
+
+            <div class="mb-3 mt-3">
+              <label class="form-label">Product Image</label>
+              <input type="file" name="image" class="form-control">
+              {% if product and product.image %}
+              <div class="mt-2"><img src="{{ url_for('static', filename=product.image) }}" style="max-width:180px; height:120px; object-fit:cover; border-radius:6px;"></div>
+              {% endif %}
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-3">
+              <a href="{{ url_for('admin.manage_products') }}" class="btn btn-outline-secondary">Cancel</a>
+              <button class="btn btn-success">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

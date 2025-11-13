@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - AgriFarma{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard bg-light min-vh-100">
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center bg-white p-4 rounded-4 shadow-sm reveal"
+                    style="backdrop-filter: blur(12px); background: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.2);">
+                    <div>
+                        <h1 class="fw-bold text-dark mb-1">Admin Dashboard</h1>
+                        <p class="text-muted mb-0">Welcome back, Administrator</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="search" class="form-control" placeholder="Search..." style="min-width: 220px;">
+                        <select class="form-select">
+                            <option>Last 7 days</option>
+                            <option>Last 30 days</option>
+                            <option>This year</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 col-xl-2 mb-4">
+                <div class="sidebar-modern text-white p-4 rounded-4 shadow-lg h-100 d-flex flex-column"
+                    style="background: linear-gradient(160deg, #006d77 0%, #023e8a 100%); min-height: 100%;">
+                    <div class="text-center mb-4">
+                        <div class="bg-white bg-opacity-20 mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center shadow-lg"
+                            style="width: 90px; height: 90px;">
+                            <i class="bi bi-shield-check fa-3x text-white"></i>
+                        </div>
+                        <h6 class="fw-bold mb-0 text-white">Administrator</h6>
+                        <small class="text-white-75">System Admin</small>
+                    </div>
+
+                    <nav class="nav flex-column flex-grow-1">
+                        <a class="nav-link-modern active mb-2 rounded-3 text-white fw-semibold py-2 px-3 d-flex align-items-center"
+                            href="{{ url_for('admin.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center"
+                            href="{{ url_for('admin.manage_users') }}"><i class="bi bi-people me-2"></i> Manage Users</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center {{ 'active' if request.path.startswith('/admin/forum') else '' }}"
+                            href="{{ url_for('admin.forum_management') }}"><i class="bi bi-chat-dots me-2"></i> Discussion Forum</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center {{ 'active' if request.path.startswith('/admin/consultancy') else '' }}"
+                            href="{{ url_for('consultancy.admin_consultancy') }}"><i class="bi bi-person-badge me-2"></i> Manage Consultants</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center {{ 'active' if request.path.startswith('/admin/categories') else '' }}"
+                            href="{{ url_for('admin.manage_categories') }}"><i class="bi bi-folder me-2"></i> Manage Categories</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center {{ 'active' if request.path.startswith('/blog/admin') else '' }}"
+                            href="{{ url_for('blog.admin_categories') }}"><i class="bi bi-journal-text me-2"></i> Our Blogs</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center"
+                            href="{{ url_for('consultancy.admin_consultancy') }}"><i class="bi bi-person-badge me-2"></i> Consultants</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center"
+                            href="{{ url_for('admin.manage_products') }}"><i class="bi bi-shop me-2"></i> Products / Store</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center"
+                            href="#"><i class="bi bi-box-seam me-2"></i> Orders</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center"
+                            href="#"><i class="bi bi-graph-up-arrow me-2"></i> Analytics</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center"
+                            href="#"><i class="bi bi-bar-chart me-2"></i> Reports</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center"
+                            href="#"><i class="bi bi-gear me-2"></i> Settings</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center {{ 'active' if request.path.startswith('/admin/messages') else '' }}"
+                            href="{{ url_for('contact.admin_messages') }}"><i class="bi bi-envelope me-2"></i> Messages</a>
+                        <a class="nav-link-modern mb-2 rounded-3 text-white-75 fw-semibold py-2 px-3 d-flex align-items-center"
+                            href="#"><i class="bi bi-bell me-2"></i> Notifications</a>
+                    </nav>
+
+                    <div class="text-center mt-auto pt-3">
+                        <hr class="border-white-50">
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light btn-sm rounded-3 px-4 py-2 fw-semibold shadow-sm">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9 col-xl-10">
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    {% set cards = [
+                        ('Total Users', total_users|default(0), '+12% this month'),
+                        ('Total Posts', total_posts|default(0), '+8% this month'),
+                        ('Total Products', total_products|default(0), '+15% this month'),
+                        ('Total Consultants', total_consultants|default(0), '+5% this month')
+                    ] %}
+                    {% for title, value, growth in cards %}
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 reveal stat-card">
+                            <div class="card-body p-4">
+                                <h3 class="fw-bold mb-1 count-up" data-target="{{ value }}">0</h3>
+                                <p class="text-muted small mb-0">{{ title }}</p>
+                                <small class="text-success fw-semibold">{{ growth }}</small>
+                                <div class="progress mt-3" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 60%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Charts Section (shorter height, equal width) -->
+                <div class="row mb-4">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 reveal">
+                            <div class="card-header bg-white border-0 py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-graph-up text-success me-3 fs-5"></i>
+                                    <div>
+                                        <h5 class="fw-bold mb-0">User Growth</h5>
+                                        <small class="text-muted">Monthly trend</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" style="height: 220px;">
+                                <canvas id="userGrowthChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mb-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 reveal">
+                            <div class="card-header bg-white border-0 py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-pie-chart text-primary me-3 fs-5"></i>
+                                    <div>
+                                        <h5 class="fw-bold mb-0">User Distribution</h5>
+                                        <small class="text-muted">By profession</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" style="height: 220px;">
+                                <canvas id="userDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity & Quick Actions -->
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 reveal">
+                            <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-clock-history text-warning me-3 fs-5"></i>
+                                    <div>
+                                        <h5 class="fw-bold mb-0">Recent Activity</h5>
+                                        <small class="text-muted">Latest updates</small>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary rounded-3">View All</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <div class="list-group-item p-3 border-0 d-flex align-items-center">
+                                        <div class="bg-success bg-opacity-10 rounded-3 p-2 me-3">
+                                            <i class="bi bi-person-plus text-success"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 fw-semibold">New User Registration</p>
+                                            <small class="text-muted">John Doe registered successfully</small>
+                                        </div>
+                                        <small class="text-muted">2 min ago</small>
+                                    </div>
+                                    <div class="list-group-item p-3 border-0 d-flex align-items-center">
+                                        <div class="bg-primary bg-opacity-10 rounded-3 p-2 me-3">
+                                            <i class="bi bi-cart text-primary"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 fw-semibold">Product Added</p>
+                                            <small class="text-muted">New product added</small>
+                                        </div>
+                                        <small class="text-muted">15 min ago</small>
+                                    </div>
+                                    <div class="list-group-item p-3 border-0 d-flex align-items-center">
+                                        <div class="bg-info bg-opacity-10 rounded-3 p-2 me-3">
+                                            <i class="bi bi-journal-text text-info"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 fw-semibold">Post Created</p>
+                                            <small class="text-muted">Blog on irrigation</small>
+                                        </div>
+                                        <small class="text-muted">1 hour ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mb-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 reveal">
+                            <div class="card-header bg-white border-0 py-3 d-flex align-items-center">
+                                <i class="bi bi-lightning text-danger me-3 fs-5"></i>
+                                <div>
+                                    <h5 class="fw-bold mb-0">Quick Actions</h5>
+                                    <small class="text-muted">Shortcuts</small>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <a href="{{ url_for('admin.manage_users') }}" class="btn btn-outline-primary w-100 rounded-3 p-3 h-100 d-flex flex-column align-items-center text-decoration-none">
+                                            <i class="bi bi-people fa-2x mb-2"></i>
+                                            <span class="small fw-semibold">Manage Users</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="{{ url_for('admin.create_product') }}" class="btn btn-outline-success w-100 rounded-3 p-3 h-100 d-flex flex-column align-items-center text-decoration-none">
+                                            <i class="bi bi-plus-circle fa-2x mb-2"></i>
+                                            <span class="small fw-semibold">Add Product</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="{{ url_for('blog.admin_categories') }}" class="btn btn-outline-info w-100 rounded-3 p-3 h-100 d-flex flex-column align-items-center text-decoration-none">
+                                            <i class="bi bi-pencil-square fa-2x mb-2"></i>
+                                            <span class="small fw-semibold">Manage Blogs</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="#" class="btn btn-outline-warning w-100 rounded-3 p-3 h-100 d-flex flex-column align-items-center text-decoration-none">
+                                            <i class="bi bi-graph-up fa-2x mb-2"></i>
+                                            <span class="small fw-semibold">View Reports</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js for analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const ctx1 = document.getElementById('userGrowthChart');
+    if (ctx1) new Chart(ctx1, {
+        type: 'line',
+        data: { labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul'],
+            datasets: [{ data: [12,19,15,25,22,30,28], borderColor:'#198754', backgroundColor:'rgba(25,135,84,0.1)', tension:0.4, fill:true }]},
+        options: { plugins:{legend:{display:false}}, maintainAspectRatio:false }
+    });
+
+    const ctx2 = document.getElementById('userDistributionChart');
+    if (ctx2) new Chart(ctx2, {
+        type: 'doughnut',
+        data: { labels:['Farmers','Consultants','Traders','Others'],
+            datasets:[{ data:[45,25,20,10], backgroundColor:['#198754','#20c997','#ffc107','#6c757d'] }]},
+        options:{ plugins:{legend:{position:'bottom'}}, maintainAspectRatio:false }
+    });
+});
+</script>
+
+<style>
+.sidebar-modern .nav-link-modern:hover,
+.sidebar-modern .nav-link-modern.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(3px);
+}
+.stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1)!important; }
+</style>
+{% endblock %}

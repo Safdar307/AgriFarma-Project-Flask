@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}{{ thread.title }} - AgriFarma Forum{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ url_for('forum.forum_home') }}">Forum</a></li>
+      <li class="breadcrumb-item"><a href="{{ url_for('forum.category_view', category_id=thread.category_id) }}">{{ thread.category.name }}</a></li>
+      <li class="breadcrumb-item active">{{ thread.title }}</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <!-- Main Thread -->
+    <div class="col-lg-8 mb-4">
+      <!-- Thread -->
+      <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-header bg-white p-4 border-0">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h3 class="mb-1">{{ thread.title }}</h3>
+              <div class="text-muted">
+                Posted by {% if thread.author %}{{ thread.author.name }}{% else %}Anonymous{% endif %} · {{ thread.created_at|timesince }}
+              </div>
+            </div>
+            {% if session.get('user_role') == 'admin' %}
+            <div class="dropdown">
+              <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="bi bi-three-dots"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#moveThreadModal">
+                    <i class="bi bi-folder-symlink me-2"></i> Move Thread
+                  </button>
+                </li>
+                <li>
+                  <form action="{{ url_for('forum.admin_delete_thread', thread_id=thread.id) }}" method="post" onsubmit="return confirm('Delete this thread?')">
+                    <button type="submit" class="dropdown-item text-danger">
+                      <i class="bi bi-trash me-2"></i> Delete Thread
+                    </button>
+                  </form>
+                </li>
+              </ul>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="card-body p-4">
+          {{ thread.body|nl2br }}
+        </div>
+      </div>
+
+      <!-- Replies -->
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white p-4 border-0">
+          <h5 class="mb-0">Replies</h5>
+        </div>
+        <div class="list-group list-group-flush">
+          {% for reply in thread.replies %}
+          <div class="list-group-item border-0 p-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="d-flex align-items-center">
+                {% if reply.author %}
+                  {% if reply.author.picture %}
+                    <img src="{{ url_for('static', filename=reply.author.picture) }}" alt="Avatar" class="rounded-circle me-2" style="width:32px;height:32px;object-fit:cover;">
+                  {% else %}
+                    <div class="rounded-circle bg-success bg-opacity-25 d-flex align-items-center justify-content-center me-2" style="width:32px;height:32px;">
+                      <span class="text-success small fw-bold">{{ reply.author.name[:1] }}</span>
+                    </div>
+                  {% endif %}
+                  <div>
+                    <div class="fw-semibold">{{ reply.author.name }}</div>
+                    <small class="text-muted">{{ reply.created_at|timesince }}</small>
+                  </div>
+                {% else %}
+                  <div class="rounded-circle bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center me-2" style="width:32px;height:32px;">
+                    <span class="text-secondary small fw-bold">A</span>
+                  </div>
+                  <div>
+                    <div class="fw-semibold">Anonymous</div>
+                    <small class="text-muted">{{ reply.created_at|timesince }}</small>
+                  </div>
+                {% endif %}
+              </div>
+              {% if session.get('user_role') == 'admin' %}
+              <form action="{{ url_for('forum.admin_delete_reply', reply_id=reply.id) }}" method="post" onsubmit="return confirm('Delete this reply?')">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+              {% endif %}
+            </div>
+            {{ reply.body|nl2br }}
+          </div>
+          {% else %}
+          <div class="list-group-item border-0 p-4 text-center text-muted">
+            No replies yet
+          </div>
+          {% endfor %}
+        </div>
+
+        {% if session.get('user_id') %}
+        <div class="card-footer bg-white p-4 border-0">
+          <form method="post" action="{{ url_for('forum.add_reply', thread_id=thread.id) }}">
+            <div class="mb-3">
+              <label class="form-label">Your Reply</label>
+              <textarea name="body" class="form-control" rows="4" required></textarea>
+            </div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-success">Post Reply</button>
+            </div>
+          </form>
+        </div>
+        {% else %}
+        <div class="card-footer bg-white p-4 border-0 text-center">
+          <p class="mb-2">Please login to reply</p>
+          <a href="{{ url_for('auth.login') }}" class="btn btn-outline-success">Login</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <!-- Latest Threads -->
+      <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-header bg-white p-3 border-0">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-clock-history text-success fs-4 me-2"></i>
+            <h5 class="mb-0 fw-bold">Latest Discussions</h5>
+          </div>
+        </div>
+        <div class="list-group list-group-flush">
+          {% for t in latest_threads %}
+          <a href="{{ url_for('forum.thread_view', thread_id=t.id) }}" class="list-group-item list-group-item-action border-0 py-3">
+            <h6 class="mb-1 text-truncate">{{ t.title }}</h6>
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">{{ t.category.name }}</small>
+              <small class="text-muted">{{ t.created_at|timesince }}</small>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Related Threads -->
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white p-3 border-0">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-link-45deg text-success fs-4 me-2"></i>
+            <h5 class="mb-0 fw-bold">Related Discussions</h5>
+          </div>
+        </div>
+        <div class="list-group list-group-flush">
+          {% for t in related_threads %}
+          <a href="{{ url_for('forum.thread_view', thread_id=t.id) }}" class="list-group-item list-group-item-action border-0 py-3">
+            <h6 class="mb-1 text-truncate">{{ t.title }}</h6>
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">{{ t.replies|length }} replies</small>
+              <small class="text-muted">{{ t.created_at|timesince }}</small>
+            </div>
+          </a>
+          {% else %}
+          <div class="list-group-item border-0 py-3 text-center text-muted">
+            No related discussions
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Move Thread Modal -->
+{% if session.get('user_role') == 'admin' %}
+<div class="modal fade" id="moveThreadModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title">Move Thread</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="post" action="{{ url_for('forum.admin_move_thread', thread_id=thread.id) }}">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Select New Category</label>
+            <select name="category_id" class="form-select" required>
+              {% for cat in categories %}
+                {% if not cat.parent %}
+                  <optgroup label="{{ cat.name }}">
+                    {% for subcat in cat.children %}
+                      <option value="{{ subcat.id }}" {{ 'selected' if subcat.id == thread.category_id else '' }}>
+                        {{ subcat.name }}
+                      </option>
+                    {% endfor %}
+                  </optgroup>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success">Move Thread</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

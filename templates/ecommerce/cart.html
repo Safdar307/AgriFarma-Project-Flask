@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Shopping Cart - AgriFarma{% endblock %}
+{% block content %}
+<style>
+  .cart-item {
+    border: none !important;
+    border-radius: 15px !important;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+  }
+  
+  .cart-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+  }
+  
+  .product-image {
+    border-radius: 12px;
+    object-fit: cover;
+  }
+  
+  .quantity-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: #198754;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .quantity-btn:hover {
+    background: #157347;
+  }
+  
+  .remove-btn {
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .summary-card {
+    border: none !important;
+    border-radius: 15px !important;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+</style>
+
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-8">
+      <h2 class="fw-bold mb-4 text-success">
+        <i class="bi bi-cart3 me-2"></i>Shopping Cart ({{ cart_count }} items)
+      </h2>
+      
+      {% if cart_items %}
+        <div class="row g-3">
+          {% for cart_item in cart_items %}
+          <div class="col-12">
+            <div class="card cart-item">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <!-- Product Image -->
+                  <div class="col-md-2 col-4">
+                    {% if cart_item.product.image %}
+                      {% if cart_item.product.image.startswith('http') %}
+                        <img src="{{ cart_item.product.image }}" class="w-100 product-image" alt="{{ cart_item.product.title }}">
+                      {% else %}
+                        <img src="{{ url_for('static', filename=cart_item.product.image) }}" class="w-100 product-image" alt="{{ cart_item.product.title }}">
+                      {% endif %}
+                    {% else %}
+                      <img src="https://source.unsplash.com/200x200/?agriculture,product&sig={{ cart_item.product.id }}" class="w-100 product-image" alt="{{ cart_item.product.title }}">
+                    {% endif %}
+                  </div>
+                  
+                  <!-- Product Details -->
+                  <div class="col-md-4 col-8">
+                    <h5 class="fw-semibold mb-1">{{ cart_item.product.title }}</h5>
+                    <p class="text-muted mb-0 small">{{ cart_item.product.description[:60] }}{% if cart_item.product.description|length > 60 %}...{% endif %}</p>
+                    <div class="fw-bold text-success mt-1">${{ '%.2f'|format(cart_item.product.price) }}</div>
+                  </div>
+                  
+                  <!-- Quantity Controls -->
+                  <div class="col-md-3 col-6">
+                    <form action="{{ url_for('ecommerce.update_cart', product_id=cart_item.product.id) }}" method="POST" class="d-flex align-items-center">
+                      <button type="button" class="quantity-btn me-2" onclick="decreaseQuantity(this)">-</button>
+                      <input type="number" name="quantity" value="{{ cart_item.quantity }}" min="0" class="form-control text-center" style="width: 70px;" readonly>
+                      <button type="button" class="quantity-btn ms-2" onclick="increaseQuantity(this)">+</button>
+                      <button type="submit" class="btn btn-outline-success btn-sm ms-2">
+                        <i class="bi bi-arrow-clockwise"></i>
+                      </button>
+                    </form>
+                  </div>
+                  
+                  <!-- Subtotal -->
+                  <div class="col-md-2 col-4 text-center">
+                    <div class="fw-semibold">${{ '%.2f'|format(cart_item.subtotal) }}</div>
+                  </div>
+                  
+                  <!-- Remove Button -->
+                  <div class="col-md-1 col-2 text-center">
+                    <form action="{{ url_for('ecommerce.remove_from_cart', product_id=cart_item.product.id) }}" method="POST">
+                      <button type="submit" class="btn btn-outline-danger remove-btn" title="Remove item">
+                        <i class="bi bi-x"></i>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        
+        <!-- Clear Cart Button -->
+        <div class="text-end mt-3">
+          <form action="{{ url_for('ecommerce.clear_cart') }}" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to clear your cart?')">
+              <i class="bi bi-trash me-2"></i>Clear Cart
+            </button>
+          </form>
+        </div>
+      {% else %}
+        <!-- Empty Cart -->
+        <div class="text-center py-5">
+          <i class="bi bi-cart-x text-muted" style="font-size: 4rem;"></i>
+          <h4 class="mt-3 text-muted">Your cart is empty</h4>
+          <p class="text-muted mb-4">Add some products to your cart to see them here</p>
+          <a href="{{ url_for('ecommerce.product_list') }}" class="btn btn-success px-4 py-2 rounded-pill">
+            <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+          </a>
+        </div>
+      {% endif %}
+    </div>
+    
+    <!-- Order Summary -->
+    {% if cart_items %}
+    <div class="col-lg-4">
+      <div class="card summary-card mt-4 mt-lg-0">
+        <div class="card-body">
+          <h5 class="fw-bold mb-3">Order Summary</h5>
+          
+          <div class="d-flex justify-content-between mb-2">
+            <span>Subtotal ({{ cart_count }} items)</span>
+            <span class="fw-semibold">${{ '%.2f'|format(total) }}</span>
+          </div>
+          
+          <div class="d-flex justify-content-between mb-2">
+            <span>Shipping</span>
+            <span class="text-success">Free</span>
+          </div>
+          
+          <div class="d-flex justify-content-between mb-2">
+            <span>Tax</span>
+            <span>${{ '%.2f'|format(total * 0.1) }}</span>
+          </div>
+          
+          <hr>
+          
+          <div class="d-flex justify-content-between fw-bold fs-5 mb-4">
+            <span>Total</span>
+            <span class="text-success">${{ '%.2f'|format(total * 1.1) }}</span>
+          </div>
+          
+          <div class="d-grid gap-2">
+            <button class="btn btn-success btn-lg rounded-pill" disabled>
+              <i class="bi bi-credit-card me-2"></i>Proceed to Checkout
+              <small class="d-block">(Coming Soon)</small>
+            </button>
+            <a href="{{ url_for('ecommerce.product_list') }}" class="btn btn-outline-success btn-lg rounded-pill">
+              <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  function increaseQuantity(btn) {
+    const input = btn.parentElement.querySelector('input[type="number"]');
+    input.value = parseInt(input.value) + 1;
+  }
+  
+  function decreaseQuantity(btn) {
+    const input = btn.parentElement.querySelector('input[type="number"]');
+    const currentValue = parseInt(input.value);
+    if (currentValue > 1) {
+      input.value = currentValue - 1;
+    }
+  }
+</script>
+{% endblock %}

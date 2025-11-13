@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="text-success">Agricultural Consultants</h2>
+            <p class="text-muted">Connect with expert consultants in various agricultural fields</p>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('consultancy.apply_consultant') }}" class="btn btn-success">
+                <i class="bi bi-person-plus-fill"></i> Apply as Consultant
+            </a>
+        </div>
+    </div>
+
+    <!-- Categories Filter -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Filter by Expertise</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for category in categories %}
+                            <button class="btn btn-outline-success category-filter" data-category="{{ category.id }}">
+                                {{ category.name }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Consultants List -->
+    <div class="row g-4">
+        {% for consultant in consultants %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm consultant-card">
+                {% if consultant.profile_picture %}
+                <img src="{{ url_for('static', filename=consultant.profile_picture) }}" class="card-img-top consultant-img" alt="{{ consultant.name }}">
+                {% else %}
+                <img src="{{ url_for('static', filename='images/default-consultant.jpg') }}" class="card-img-top consultant-img" alt="Default Profile">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ consultant.name }}</h5>
+                    <p class="card-text text-muted mb-2">
+                        <small>
+                            <i class="bi bi-bookmark-fill"></i> {{ consultant.category_rel.name }}
+                            {% if consultant.subcategory_rel %}
+                            <span class="mx-1">›</span> {{ consultant.subcategory_rel.name }}
+                            {% endif %}
+                        </small>
+                    </p>
+                    <p class="card-text">{{ consultant.bio[:150] }}{% if consultant.bio|length > 150 %}...{% endif %}</p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <button class="btn btn-success w-100 contact-btn"
+                            data-consultant-id="{{ consultant.id }}"
+                            data-name="{{ consultant.name }}"
+                            data-email="{{ consultant.email }}"
+                            data-phone="{{ consultant.phone }}"
+                            data-bio="{{ consultant.bio }}"
+                            data-category="{{ consultant.category_rel.name }}"
+                            data-subcategory="{{ consultant.subcategory_rel.name if consultant.subcategory_rel else '' }}"
+                            data-profile-pic="{{ consultant.profile_picture }}">
+                        <i class="bi bi-person-lines-fill"></i> Contact Consultant
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">No consultants available at the moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Consultant Details Modal -->
+<div class="modal fade" id="consultantModal" tabindex="-1" aria-labelledby="consultantModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="consultantModalLabel">
+                    <i class="bi bi-person-badge me-2"></i>Consultant Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3">
+                        <img id="modalProfilePic" src="" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;" alt="Consultant Photo">
+                        <div>
+                            <h5 id="modalName" class="mb-1"></h5>
+                            <p class="text-muted mb-0" id="modalCategory"></p>
+                            <p class="text-muted small" id="modalSubcategory"></p>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <div class="contact-info">
+                                    <i class="bi bi-envelope text-success me-2"></i>
+                                    <strong>Email:</strong>
+                                    <a id="modalEmail" href="#" class="text-decoration-none"></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="contact-info">
+                                    <i class="bi bi-telephone text-success me-2"></i>
+                                    <strong>Phone:</strong>
+                                    <a id="modalPhone" href="#" class="text-decoration-none"></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6 class="text-success mb-2"><i class="bi bi-info-circle me-1"></i>About</h6>
+                            <p id="modalBio" class="text-muted"></p>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <h6 class="text-success mb-2"><i class="bi bi-lightning me-1"></i>Quick Actions</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button id="modalEmailBtn" class="btn btn-outline-success btn-sm">
+                                        <i class="bi bi-envelope me-1"></i>Send Email
+                                    </button>
+                                    <button id="modalCallBtn" class="btn btn-outline-success btn-sm">
+                                        <i class="bi bi-telephone me-1"></i>Call Now
+                                    </button>
+                                    <button id="modalShareBtn" class="btn btn-outline-success btn-sm">
+                                        <i class="bi bi-share me-1"></i>Share Profile
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="modalContactBtn">
+                    <i class="bi bi-chat-dots me-1"></i>Contact This Consultant
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.consultant-img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.consultant-card {
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.consultant-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.contact-info {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.contact-info:last-child {
+    border-bottom: none;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: none;
+    padding: 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #f0f0f0;
+    padding: 1.5rem;
+}
+
+#modalProfilePic {
+    border: 3px solid #198754;
+    box-shadow: 0 4px 15px rgba(25, 135, 84, 0.2);
+}
+
+.btn-outline-success:hover {
+    background-color: #198754;
+    border-color: #198754;
+    transform: translateY(-1px);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle contact button clicks
+    document.querySelectorAll('.contact-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const consultantId = this.dataset.consultantId;
+            const name = this.dataset.name;
+            const email = this.dataset.email;
+            const phone = this.dataset.phone;
+            const bio = this.dataset.bio;
+            const category = this.dataset.category;
+            const subcategory = this.dataset.subcategory;
+            const profilePic = this.dataset.profilePic;
+            
+            // Populate modal with consultant data
+            document.getElementById('modalName').textContent = name;
+            document.getElementById('modalCategory').textContent = category;
+            document.getElementById('modalSubcategory').textContent = subcategory;
+            document.getElementById('modalBio').textContent = bio;
+            
+            const profilePicElement = document.getElementById('modalProfilePic');
+            if (profilePic && profilePic !== 'None') {
+                profilePicElement.src = `/static/${profilePic}`;
+            } else {
+                profilePicElement.src = '/static/images/default-consultant.jpg';
+            }
+            
+            // Set up contact links
+            const emailElement = document.getElementById('modalEmail');
+            const phoneElement = document.getElementById('modalPhone');
+            emailElement.textContent = email;
+            emailElement.href = `mailto:${email}`;
+            phoneElement.textContent = phone;
+            phoneElement.href = `tel:${phone}`;
+            
+            // Set up action buttons
+            document.getElementById('modalEmailBtn').onclick = () => window.location.href = `mailto:${email}`;
+            document.getElementById('modalCallBtn').onclick = () => window.location.href = `tel:${phone}`;
+            document.getElementById('modalContactBtn').onclick = () => window.location.href = `mailto:${email}`;
+            
+            document.getElementById('modalShareBtn').onclick = () => {
+                if (navigator.share) {
+                    navigator.share({
+                        title: `${name} - Agricultural Consultant`,
+                        text: `Check out ${name}, an expert in ${category}`,
+                        url: window.location.href
+                    });
+                } else {
+                    navigator.clipboard.writeText(window.location.href);
+                    alert('Profile link copied to clipboard!');
+                }
+            };
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('consultantModal'));
+            modal.show();
+        });
+    });
+});
+
+// Category filter functionality
+document.querySelectorAll('.category-filter').forEach(button => {
+    button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        document.querySelectorAll('.category-filter').forEach(btn => btn.classList.remove('active'));
+        
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        // Filter consultants by category (you can implement this logic)
+        console.log('Filtering by category:', this.dataset.category);
+        
+        // TODO: Implement actual filtering logic
+        // This would involve showing/hiding consultant cards based on selected category
+    });
+});
+</script>
+{% endblock %}

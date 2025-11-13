@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.name }} - AgriFarma Forum{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ url_for('forum.forum_home') }}">Forum</a></li>
+      {% if category.parent %}
+        <li class="breadcrumb-item"><a href="{{ url_for('forum.category_view', category_id=category.parent.id) }}">{{ category.parent.name }}</a></li>
+      {% endif %}
+      <li class="breadcrumb-item active">{{ category.name }}</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <!-- Main Content -->
+    <div class="col-lg-8 mb-4">
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white p-4 border-0">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="mb-1">{{ category.name }}</h3>
+              <p class="text-muted mb-0">{{ threads|length }} discussions</p>
+            </div>
+            {% if session.get('user_id') %}
+              <a href="{{ url_for('forum.create_thread') }}" class="btn btn-success">
+                <i class="bi bi-plus-lg"></i> New Thread
+              </a>
+            {% endif %}
+          </div>
+        </div>
+        
+        <div class="list-group list-group-flush">
+          {% for thread in threads %}
+          <div class="list-group-item border-0 p-4">
+            <div class="d-flex align-items-center mb-2">
+              {% if thread.author.picture %}
+                <img src="{{ url_for('static', filename=thread.author.picture) }}" alt="Avatar" class="rounded-circle me-2" style="width:40px;height:40px;object-fit:cover;">
+              {% else %}
+                <div class="rounded-circle bg-success bg-opacity-25 d-flex align-items-center justify-content-center me-2" style="width:40px;height:40px;">
+                  <span class="text-success fw-bold">{{ thread.author.name[:1] }}</span>
+                </div>
+              {% endif %}
+              <div class="flex-grow-1">
+                <h5 class="mb-0">
+                  <a href="{{ url_for('forum.thread_view', thread_id=thread.id) }}" class="text-decoration-none text-dark">
+                    {{ thread.title }}
+                  </a>
+                </h5>
+                <small class="text-muted">
+                  Started by {{ thread.author.name }} · {{ thread.created_at|timesince }}
+                </small>
+              </div>
+              <div class="text-end">
+                <div class="fw-bold">{{ thread.replies|length }}</div>
+                <small class="text-muted">Replies</small>
+              </div>
+            </div>
+            <p class="text-muted mb-0">{{ thread.body|truncate(200) }}</p>
+          </div>
+          {% else %}
+          <div class="list-group-item border-0 p-4 text-center">
+            <p class="text-muted mb-3">No discussions in this category yet</p>
+            {% if session.get('user_id') %}
+              <a href="{{ url_for('forum.create_thread') }}" class="btn btn-success">
+                <i class="bi bi-plus-lg"></i> Start New Thread
+              </a>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <!-- Sub-categories if parent -->
+      {% if category.children %}
+      <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-header bg-white p-3 border-0">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-folder2 text-success fs-4 me-2"></i>
+            <h5 class="mb-0 fw-bold">Sub-categories</h5>
+          </div>
+        </div>
+        <div class="list-group list-group-flush">
+          {% for subcat in category.children %}
+          <a href="{{ url_for('forum.category_view', category_id=subcat.id) }}" class="list-group-item list-group-item-action border-0 py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="mb-0">{{ subcat.name }}</h6>
+                <small class="text-muted">{{ subcat.threads|length }} threads</small>
+              </div>
+              <i class="bi bi-chevron-right text-muted"></i>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Latest Threads -->
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white p-3 border-0">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-clock-history text-success fs-4 me-2"></i>
+            <h5 class="mb-0 fw-bold">Latest Discussions</h5>
+          </div>
+        </div>
+        <div class="list-group list-group-flush">
+          {% for thread in latest_threads %}
+          <a href="{{ url_for('forum.thread_view', thread_id=thread.id) }}" class="list-group-item list-group-item-action border-0 py-3">
+            <h6 class="mb-1 text-truncate">{{ thread.title }}</h6>
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">{{ thread.category.name }}</small>
+              <small class="text-muted">{{ thread.created_at|timesince }}</small>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

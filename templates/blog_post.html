@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - AgriFarma{% endblock %}
+
+{% block content %}
+<style>
+  :root {
+    --primary-green: #198754;
+    --accent: #20c997;
+    --glass: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(25, 135, 84, 0.15);
+  }
+
+  .post-hero {
+    padding: 24px;
+    background: linear-gradient(135deg, var(--primary-green), var(--accent));
+    color: #fff;
+    border-radius: 14px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 25px rgba(25, 135, 84, 0.25);
+  }
+
+  .media-gallery {
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 8px 20px rgba(25, 135, 84, 0.1);
+  }
+
+  /* ↓ Add this section to make media height shorter */
+  .media-gallery img,
+  .media-gallery video {
+    width: 100%;
+    height: 350px; /* Reduced height (about 2 inches shorter) */
+    object-fit: cover;
+    border-radius: 14px;
+  }
+
+  .meta-line {
+    color: #eaf7ef;
+    font-size: .95rem;
+  }
+
+  .tag-pill {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 999px;
+    margin-right: 6px;
+    font-weight: 600;
+    font-size: .85rem;
+  }
+
+  .card.glassy {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 8px 20px rgba(25, 135, 84, 0.1);
+  }
+
+  .comment-box {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--glass-border);
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .reply {
+    margin-left: 20px;
+    border-left: 2px solid rgba(25, 135, 84, 0.2);
+    padding-left: 12px;
+  }
+
+  .action-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .counts {
+    display: inline-flex;
+    gap: 12px;
+    align-items: center;
+    color: #3b3f41;
+  }
+
+  .btn-outline-success {
+    border-radius: 8px;
+  }
+</style>
+
+<div class="container py-4">
+  <div class="post-hero text-center">
+    <h1 class="h3 mb-2 fw-bold">{{ post.title }}</h1>
+    <div class="meta-line mb-2">
+      by <strong>{{ post.author_name if post.author_name else (post.author_id or 'Author') }}</strong> •
+      {{ post.created_at.strftime('%b %d, %Y') if post.created_at else '' }}
+    </div>
+    <div>
+      {% if post.tags %}
+        {% for t in post.tags.split(',') %}
+          <span class="tag-pill">{{ t.strip() }}</span>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="media-gallery mb-4">
+    {% if media and media|length > 1 %}
+      <div id="postCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          {% for m in media %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+              {% if m.media_type == 'image' %}
+                <img src="{{ url_for('static', filename=m.file_path) }}" class="d-block w-100" alt="">
+              {% elif m.media_type == 'video' %}
+                <video controls class="w-100"><source src="{{ url_for('static', filename=m.file_path) }}"></video>
+              {% else %}
+                <div class="p-4 text-center"><a href="{{ url_for('static', filename=m.file_path) }}" target="_blank">Download file</a></div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    {% elif media and media|length == 1 %}
+      {% set m = media[0] %}
+      {% if m.media_type == 'image' %}
+        <img src="{{ url_for('static', filename=m.file_path) }}" class="img-fluid w-100" alt="">
+      {% elif m.media_type == 'video' %}
+        <video controls class="w-100"><source src="{{ url_for('static', filename=m.file_path) }}"></video>
+      {% else %}
+        <div class="p-3 text-center"><a href="{{ url_for('static', filename=m.file_path) }}" target="_blank">Download file</a></div>
+      {% endif %}
+    {% else %}
+      <img src="{{ url_for('static', filename='images/dan-meyers-IQVFVH0ajag-unsplash.jpg') }}" class="img-fluid w-100" alt="">
+    {% endif %}
+  </div>
+
+  <div class="card glassy mb-4">
+    <div class="card-body">
+      <div class="mb-3">{{ post.body|nl2br|safe }}</div>
+
+      <div class="action-bar mb-3">
+        <div class="counts">
+          <span><i class="bi bi-heart"></i> <span id="likeCount" data-post-id="{{ post.id }}" data-user-liked="{{ 'true' if user_has_liked else 'false' }}">{{ post.likes|length if post.likes is defined else 0 }}</span></span>
+          <span><i class="bi bi-chat-left-text"></i> {{ post.comments|length if post.comments is defined else (comments|length if comments is defined else 0) }}</span>
+        </div>
+        <div>
+          <button id="likeBtn" class="btn btn-outline-success btn-sm">❤ <span id="likeText">Like</span></button>
+        </div>
+      </div>
+
+      <hr>
+
+      <h5 class="mb-3">Comments ({{ comments|length if comments is defined else 0 }})</h5>
+
+      {% if comments %}
+        {% for c in comments %}
+          <div class="comment-box mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <div><strong>{{ c.author_name or 'Anonymous' }}</strong> <small class="text-muted">{{ c.created_at.strftime('%b %d, %Y %H:%M') }}</small></div>
+              {% if session.get('user_role') == 'admin' %}
+                <form method="post" action="{{ url_for('blog.admin_delete_comment', comment_id=c.id) }}">
+                  <button class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+              {% endif %}
+            </div>
+            <div class="mb-2">{{ c.body }}</div>
+
+            {% if c.replies %}
+              <div class="reply">
+                {% for r in c.replies %}
+                  <div class="comment-box mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <strong>{{ r.author_name or 'Anonymous' }}</strong>
+                      <small class="text-muted">{{ r.created_at.strftime('%b %d, %Y %H:%M') }}</small>
+                    </div>
+                    <div>{{ r.body }}</div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <!-- Inline reply form -->
+            <div class="mt-2">
+              <form method="post" action="{{ url_for('blog.reply_comment', comment_id=c.id) }}">
+                <div class="input-group">
+                  <input name="body" class="form-control form-control-sm" placeholder="Reply to this comment...">
+                  <button class="btn btn-sm btn-outline-primary">Reply</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-muted">No comments yet. Be the first to comment.</div>
+      {% endif %}
+
+      <hr>
+
+      <!-- Add Comment Form -->
+      {% if session.get('user_id') %}
+        <div class="mb-3">
+          <h6 class="mb-3">Add a Comment</h6>
+          <form method="post" action="{{ url_for('blog.add_comment', post_id=post.id) }}">
+            <div class="mb-2">
+              <textarea name="body" class="form-control" rows="3" placeholder="Write your comment here..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success btn-sm">
+              <i class="bi bi-chat-left-text me-1"></i>Post Comment
+            </button>
+          </form>
+        </div>
+      {% else %}
+        <div class="text-center py-3">
+          <p class="text-muted mb-2">Please log in to add a comment</p>
+          <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-sm">
+            <i class="bi bi-box-arrow-in-right me-1"></i>Login to Comment
+          </a>
+        </div>
+      {% endif %}
+
+      {% set user_has_liked = false %}
+      {% if session.get('user_id') and post.likes %}
+        {% for like in post.likes %}
+          {% if like.user_id == session.get('user_id') %}
+            {% set user_has_liked = true %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const likeBtn = document.getElementById('likeBtn');
+    const likeCount = document.getElementById('likeCount');
+    const likeText = document.getElementById('likeText');
+    
+    if(!likeBtn || !likeCount || !likeText) return;
+    
+    // Template variables from data attributes
+    const postId = parseInt(likeCount.getAttribute('data-post-id'));
+    const userLiked = likeCount.getAttribute('data-user-liked') === 'true';
+    
+    // Update initial state
+    if (userLiked) {
+      likeBtn.classList.remove('btn-outline-success');
+      likeBtn.classList.add('btn-success');
+      likeText.textContent = 'Liked';
+    }
+    
+    likeBtn.addEventListener('click', async ()=>{
+      if (!postId) {
+        alert('Error: Invalid post ID');
+        return;
+      }
+      
+      likeBtn.classList.add('disabled');
+      likeBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+      
+      try {
+        const response = await fetch(`/blog/like/${postId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          
+          if (data.success) {
+            // Update like count
+            likeCount.textContent = data.count;
+            
+            // Update button appearance
+            if (data.action === 'liked') {
+              likeBtn.classList.remove('btn-outline-success');
+              likeBtn.classList.add('btn-success');
+              likeText.textContent = 'Liked';
+              
+              // Add like animation
+              likeBtn.style.transform = 'scale(1.1)';
+              setTimeout(() => likeBtn.style.transform = 'scale(1)', 150);
+            } else {
+              likeBtn.classList.remove('btn-success');
+              likeBtn.classList.add('btn-outline-success');
+              likeText.textContent = 'Like';
+              
+              // Add unlike animation
+              likeBtn.style.transform = 'scale(0.9)';
+              setTimeout(() => likeBtn.style.transform = 'scale(1)', 150);
+            }
+          } else {
+            alert('Error: ' + (data.msg || 'Could not process like'));
+          }
+        } else {
+          if (response.status === 401) {
+            alert('Please login to like posts.');
+            window.location.href = '/auth/login';
+          } else {
+            alert('Error processing like request');
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Network error. Please try again.');
+      } finally {
+        likeBtn.innerHTML = '❤ <span id="likeText">' + likeText.textContent + '</span>';
+        likeBtn.classList.remove('disabled');
+      }
+    });
+  });
+</script>
+
+{% endblock %}

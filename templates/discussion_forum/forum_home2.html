@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}Discussion Forum - AgriFarma{% endblock %}
+{% block content %}
+<div class="discussion-forum min-vh-100 py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+  <div class="container">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="glassy-card p-4 rounded-4 reveal fade-up">
+          <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center">
+            <div>
+              <h1 class="h2 fw-bold mb-2" style="background: linear-gradient(45deg, #1b5e20, #4caf50); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Discussion Forum 🌱
+              </h1>
+              <p class="text-muted mb-0">Connect with the farming community and share knowledge</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              {% if session.get('user_id') %}
+                <a href="{{ url_for('forum.create_thread') }}" class="btn btn-success d-flex align-items-center gap-2">
+                  <i class="bi bi-plus-lg"></i> Start New Discussion
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Latest Discussions -->
+      <div class="col-lg-8 mb-4">
+        <div class="glassy-card rounded-4 mb-4 reveal fade-up">
+          <div class="card-header bg-transparent p-4 border-0 d-flex align-items-center justify-content-between">
+            <h5 class="mb-0 text-success fw-bold"><i class="bi bi-chat-dots me-2"></i>Recent Discussions</h5>
+          </div>
+          <div class="list-group list-group-flush">
+            {% for thread in latest_threads %}
+              <a href="{{ url_for('forum.thread_view', thread_id=thread.id) }}" class="list-group-item list-group-item-action px-4 py-3 bg-transparent">
+                <div class="d-flex w-100 justify-content-between align-items-start">
+                  <div>
+                    <h6 class="mb-1 text-dark text-truncate">{{ thread.title }}</h6>
+                    <small class="text-muted d-block">by {% if thread.author %}{{ thread.author.name }}{% else %}Anonymous{% endif %} in {{ thread.category.name }}</small>
+                  </div>
+                  <small class="text-muted ms-2 text-nowrap">{{ thread.created_at|timesince }}</small>
+                </div>
+              </a>
+            {% else %}
+              <div class="list-group-item px-4 py-3 bg-transparent text-muted">No discussions yet</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <!-- Latest Threads -->
+        <div class="glassy-card rounded-4 mb-4 reveal fade-up" style="animation-delay: 0.2s">
+          <div class="card-header bg-transparent p-4 border-0">
+            <h5 class="mb-0 text-primary">
+              <i class="bi bi-clock-history me-2"></i>
+              Latest Threads
+            </h5>
+          </div>
+          <div class="list-group list-group-flush">
+            {% for thread in latest_threads %}
+              <a href="{{ url_for('forum.thread_view', thread_id=thread.id) }}" class="list-group-item list-group-item-action px-4 py-3 bg-transparent">
+                <div class="d-flex w-100 justify-content-between align-items-start">
+                  <div>
+                    <h6 class="mb-1 text-dark text-truncate">{{ thread.title }}</h6>
+                    <small class="text-muted d-block">
+                      by {{ thread.author.username }} in {{ thread.category.name }}
+                    </small>
+                  </div>
+                  <small class="text-muted ms-2 text-nowrap">{{ thread.created_at|timesince }}</small>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Forum Stats -->
+        <div class="glassy-card rounded-4 mb-4 reveal fade-up" style="animation-delay: 0.3s">
+          <div class="card-header bg-transparent p-4 border-0">
+            <h5 class="mb-0 text-success">
+              <i class="bi bi-bar-chart me-2"></i>
+              Forum Statistics
+            </h5>
+          </div>
+          <div class="list-group list-group-flush">
+            <div class="list-group-item bg-transparent px-4 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-muted">Total Threads</span>
+                <span class="badge bg-success rounded-pill">{{ latest_threads|length }}</span>
+              </div>
+            </div>
+            <div class="list-group-item bg-transparent px-4 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-muted">Categories</span>
+                <span class="badge bg-primary rounded-pill">{{ latest_threads|length }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Popular Topics -->
+        <div class="glassy-card rounded-4 reveal fade-up" style="animation-delay: 0.4s">
+          <div class="card-header bg-transparent p-4 border-0">
+            <h5 class="mb-0 text-info">
+              <i class="bi bi-tags me-2"></i>
+              Popular Topics
+            </h5>
+          </div>
+          <div class="card-body p-4">
+            {% if popular_tags %}
+              {% for tag in popular_tags %}
+                <a href="{{ url_for('forum.forum_search') }}?q={{ tag }}" class="text-decoration-none">
+                  <span class="badge bg-light text-dark border">{{ tag }}</span>
+                </a>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted mb-0">No topics yet</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.glassy-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(76, 175, 80, 0.2); /* soft green border */
+  box-shadow: 0 8px 24px rgba(76, 175, 80, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.glassy-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(76, 175, 80, 0.15);
+}
+.list-group-item:hover {
+  background-color: rgba(220, 237, 200, 0.4);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('fade-up');
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+});
+</script>
+{% endblock %}

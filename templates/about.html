@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}About AgriFarma{% endblock %}
+{% block content %}
+
+<!-- About Section -->
+<section class="d-flex align-items-center justify-content-center section" style="min-height: 75vh;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10 col-xl-8">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+          <div class="row g-0">
+            
+            <!-- Image Section -->
+            <div class="col-md-5">
+              <div 
+                class="h-100 w-100" 
+                style="background: url('{{ url_for('static', filename='images/jed-owen-ajZibDGpPew-unsplash.jpg') }}') center center / cover no-repeat; min-height: 320px;">
+              </div>
+            </div>
+
+            <!-- Text Section -->
+            <div class="col-md-7">
+              <div class="card-body p-4 p-lg-5">
+                <h1 class="fw-bold mb-3">About AgriFarma</h1>
+                <p class="lead text-muted mb-4">
+                  A one-stop digital platform empowering farmers in Sindh, Pakistan with knowledge, community, consultancy, and commerce.
+                </p>
+
+                <div class="row g-3 mb-4">
+                  <div class="col-sm-6">
+                    <div class="p-3 rounded-3 bg-light h-100">
+                      <div class="fw-semibold">Knowledge & Learning</div>
+                      <div class="text-muted small">Practical guides, blog posts, and success stories.</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="p-3 rounded-3 bg-light h-100">
+                      <div class="fw-semibold">Consultancy</div>
+                      <div class="text-muted small">Connect with experts for timely advice.</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="p-3 rounded-3 bg-light h-100">
+                      <div class="fw-semibold">Community Forum</div>
+                      <div class="text-muted small">Discuss, ask questions, and share tips.</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="p-3 rounded-3 bg-light h-100">
+                      <div class="fw-semibold">Marketplace</div>
+                      <div class="text-muted small">Buy and sell agricultural products online.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                  <a href="/forum" class="btn btn-success">Visit Forum</a>
+                  <a href="/shop" class="btn btn-outline-success">Explore Marketplace</a>
+                </div>
+              </div>
+            </div>
+
+          </div> <!-- End inner row -->
+        </div> <!-- End card -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="section py-5">
+  <div class="container">
+    <div class="row g-4 justify-content-center text-center">
+
+      <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm p-3">
+          <div class="fs-3 fw-bold text-success">10k+</div>
+          <div class="text-muted small">Farmers Reached</div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm p-3">
+          <div class="fs-3 fw-bold text-success">1k+</div>
+          <div class="text-muted small">Expert Sessions</div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm p-3">
+          <div class="fs-3 fw-bold text-success">5k+</div>
+          <div class="text-muted small">Forum Threads</div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm p-3">
+          <div class="fs-3 fw-bold text-success">2k+</div>
+          <div class="text-muted small">Marketplace Listings</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
